@@ -1,5 +1,22 @@
 import { Link } from 'react-router-dom'
+import { useState } from 'react';
 function Login() {
+    const [state, setState] = useState({
+        email: '',
+        password: '',
+    }) ;
+
+    const handleInput = e => {
+        setState({
+            ...state,
+            [e.target.name]: e.target.value
+        })
+    }
+
+    const handleSubmitForm = e => {
+        e.preventDefault();
+        console.log(state)
+    }
     return ( 
         <div className="register">
             <div className="card">
@@ -8,15 +25,15 @@ function Login() {
                 </div>
 
                 <div className="card-body">
-                    <form>
+                    <form onSubmit={handleSubmitForm}>
                         <div className="form-group">
                             <label htmlFor="email">Email</label>
-                            <input type="email" name="email" id="email" className="form-control" placeholder="Email"/>
+                            <input type="email" onChange={handleInput} name="email" id="email" className="form-control" placeholder="Email"/>
                         </div>
 
                         <div className="form-group">
                             <label htmlFor="password">Password</label>
-                            <input type="password" name="password" id="password" className="form-control" placeholder="password"/>
+                            <input type="password" onChange={handleInput} name="password" id="password" className="form-control" placeholder="password"/>
                         </div>
 
                         
