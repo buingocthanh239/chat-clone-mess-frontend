@@ -1,5 +1,10 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom'
+import {  toast} from 'react-toastify'
+import { userRegister } from '../store/actions/authAction';
+import { useDispatch, useSelector} from 'react-redux';
+import { ERROR_MESSAGE_CLEAR, SUCCESS_MESSAGE_CLEAR } from '../store/types/authType';
+
 function Register() {
     const [state, setState] = useState({
         username: '',
@@ -9,6 +14,12 @@ function Register() {
         image: '',
     }) ;
     const [loadImage, setLoadImage] = useState('');
+
+    const navigate = useNavigate();
+    const {  authenticate, error, successMessage } = useSelector(state => state.auth)
+    
+
+    const dispatch = useDispatch();
 
     const handleInput = e => {
         setState({
@@ -32,9 +43,34 @@ function Register() {
     }
     
     const handleSubmitForm = e => {
+        const {username,email,password,confirmPassword, image} = state;
         e.preventDefault();
-        console.log(state)
+
+        const formData = new FormData();
+
+        formData.append('username',username);
+        formData.append('email',email);
+        formData.append('password',password);
+        formData.append('confirmPassword',confirmPassword);
+        formData.append('image',image);
+        dispatch(userRegister(formData))
     }
+
+    useEffect(() => {
+        if (authenticate) {
+            navigate('/')
+        }
+        if (successMessage) {
+            toast.success(successMessage);
+            dispatch({type: SUCCESS_MESSAGE_CLEAR})
+            navigate('/messenger/login')
+        }
+        if (error) {
+            error.map(err => toast.error(err));
+            dispatch({type: ERROR_MESSAGE_CLEAR})
+        }
+
+    }, [successMessage, error])
     return ( 
         <div className="register">
             <div className="card">
@@ -46,22 +82,22 @@ function Register() {
                     <form onSubmit={handleSubmitForm}> 
                         <div className="form-group">
                             <label htmlFor="username">Username</label>
-                            <input type="text" onChange={handleInput} name="username" id="username" className="form-control" placeholder="Username"/>
+                            <input type="text" onChange={handleInput} value={state.username} name="username" id="username" className="form-control" placeholder="Username"/>
                         </div>
 
                         <div className="form-group">
                             <label htmlFor="email">Email</label>
-                            <input type="email" onChange={handleInput} name="email" id="email" className="form-control" placeholder="Email"/>
+                            <input type="email" onChange={handleInput} value={state.email} name="email" id="email" className="form-control" placeholder="Email"/>
                         </div>
 
                         <div className="form-group">
                             <label htmlFor="password">Password</label>
-                            <input type="password" onChange={handleInput} name="password" id="password" className="form-control" placeholder="password"/>
+                            <input type="password" onChange={handleInput} value={state.password} name="password" id="password" className="form-control" placeholder="password"/>
                         </div>
 
                         <div className="form-group">
                             <label htmlFor="confirmPassword">Confirm Password</label>
-                            <input type="password" onChange={handleInput} name="confirmPassword" id="confirmPassword" className="form-control" placeholder="Confirm Password"/>
+                            <input type="password" onChange={handleInput} value={state.confirmPassword} name="confirmPassword" id="confirmPassword" className="form-control" placeholder="Confirm Password"/>
                         </div>
 
 
@@ -72,7 +108,7 @@ function Register() {
                                 </div>
                                 <div className="file">
                                     <label htmlFor="image">Select Image</label>
-                                    <input type="file" onChange={handleImage} name="image" id="image" className="form-control" />
+                                    <input type="file" onChange={handleImage}  name="image" id="image" className="form-control" />
                                 </div>
                             </div>                         
                         </div>
@@ -87,7 +123,6 @@ function Register() {
                     </form>
                 </div>
             </div>
-
         </div> 
     );
 }
