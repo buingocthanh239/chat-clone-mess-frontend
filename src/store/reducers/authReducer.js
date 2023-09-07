@@ -1,5 +1,5 @@
 import {REGISTER_SUCCESS, LOGIN_FAIL, REGISTER_FAIL, LOGIN_SUCCESS, SUCCESS_MESSAGE_CLEAR, ERROR_MESSAGE_CLEAR} from '../types/authType'
-const decodeToken = require('jwt-decode')
+import jwtDecode from 'jwt-decode'
 const authSate = {
     loading: true,
     authenticate: false,    
@@ -9,7 +9,7 @@ const authSate = {
 }
 
 const tokenDecode = (token) => {
-    const tokenDecode = decodeToken(token);
+    const tokenDecode = jwtDecode (token);
     const expiresTime = new Date(tokenDecode.exp * 1000)
     if (new Date() > expiresTime) {
         return null

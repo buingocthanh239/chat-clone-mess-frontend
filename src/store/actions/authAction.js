@@ -50,7 +50,7 @@ export const userLogin = (data) => {
             dispatch({
                 type: LOGIN_FAIL,
                 payload: {
-                    errorMessage: err.respone.data.error.errorMessage
+                    errorMessage: err.response.data.error.errorMessage
                 }
             })
         }

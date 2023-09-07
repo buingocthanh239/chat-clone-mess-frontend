@@ -1,10 +1,36 @@
 import { Link } from 'react-router-dom'
-import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { useState, useEffect } from 'react';
+import { userLogin } from '../store/actions/authAction';
+import { toast } from 'react-toastify';
+import { SUCCESS_MESSAGE_CLEAR, ERROR_MESSAGE_CLEAR } from '../store/types/authType';
 function Login() {
     const [state, setState] = useState({
         email: '',
         password: '',
     }) ;
+
+    const navigate = useNavigate();
+    const {  authenticate, error, successMessage } = useSelector(state => state.auth)
+    
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (authenticate) {
+            navigate('/')
+        }
+        if (successMessage) {
+            toast.success(successMessage);
+            dispatch({type: SUCCESS_MESSAGE_CLEAR})
+        }
+        if (error) {
+            error.map(err => toast.error(err));
+            dispatch({type: ERROR_MESSAGE_CLEAR})
+        }
+
+    }, [successMessage, error])
 
     const handleInput = e => {
         setState({
@@ -15,7 +41,7 @@ function Login() {
 
     const handleSubmitForm = e => {
         e.preventDefault();
-        console.log(state)
+        dispatch(userLogin(state))
     }
     return ( 
         <div className="register">
@@ -28,12 +54,12 @@ function Login() {
                     <form onSubmit={handleSubmitForm}>
                         <div className="form-group">
                             <label htmlFor="email">Email</label>
-                            <input type="email" onChange={handleInput} name="email" id="email" className="form-control" placeholder="Email"/>
+                            <input type="email" onChange={handleInput} value={state.email} name="email" id="email" className="form-control" placeholder="Email"/>
                         </div>
 
                         <div className="form-group">
                             <label htmlFor="password">Password</label>
-                            <input type="password" onChange={handleInput} name="password" id="password" className="form-control" placeholder="password"/>
+                            <input type="password" onChange={handleInput} value={state.password} name="password" id="password" className="form-control" placeholder="password"/>
                         </div>
 
                         
