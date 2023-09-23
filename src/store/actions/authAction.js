@@ -8,8 +8,8 @@ export const userRegister = (data) => {
         const config = {
             header: {
                 'Content-Type': 'application/json'
-            }
-        }
+            }, 
+         }
         try {
             const respone = await axios.post(BASE_URL+'/api/messenger/register', data, config)
             dispatch({
