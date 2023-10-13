@@ -32,8 +32,8 @@ function RightSide(props) {
                                 </div>
                             </div>
 
-                            <Message />
-                            <MessageSend />
+                            <Message friendInfo={friendInfo}/>
+                            <MessageSend friendId={friendInfo._id}/>
                         </div>
                     </div>
                     <div className="col-4" >
